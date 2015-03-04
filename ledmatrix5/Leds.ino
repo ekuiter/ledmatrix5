@@ -4,6 +4,7 @@ Leds::Leds(Registers& r, void (*d)()): registers(r), displayHook(d) {
     setupPointOfView(i);
 }
 
+// a bool is returned to determine whether the current effect should be cancelled (true) or not (false)
 bool Leds::display(int duration) {
   unsigned long waitUntil = millis() + duration;
   displayHook();
@@ -11,13 +12,15 @@ bool Leds::display(int duration) {
     return true;
   mapLedsToBits();
   registers.shift();
+  // When the matrix is displayed for <duration> milliseconds, the processor
+  // needs to wait. This wait duration can be used instead of wasted:
   while (millis() < waitUntil) {
     if ((long) (waitUntil - millis()) > AVG_DUMP_DURATION)
-      dumpState();
+      dumpState(); // if there is enough time, tell Linino about the current matrix
     if ((long) (waitUntil - millis()) > AVG_HOOK_DURATION)
-      displayHook();
+      displayHook(); // if there is enough time, ask Linino about new commands
     if (mode == SWITCHING_LOOP || mode == SWITCHING_MANUAL)
-      return true;
+      return true; // if Linino sent a new command, do not wait and unwind the stack
   }
   return false;
 }
@@ -54,8 +57,8 @@ void Leds::swapKeyValue(byte* dst, byte* src, size_t num) {
 
 void Leds::setupPointOfView(int pov) {
   byte srcMap[LEDNUM], dstMap[LEDNUM], transposeMap[LEDNUM] =
-  { 72, 73, 74, 57, 58, 59, 42, 43,
-    44, 27, 28, 29, 12, 13, 14,  9,
+  { 72, 73, 74, 57, 58, 59, 42, 43, // transposeMap does not need to be adjusted (whatever maps[...] is).
+    44, 27, 28, 29, 12, 13, 14,  9, // It describes how a 90 degrees rotation looks like.
     10, 11, 24, 25, 26, 39, 40, 41,
     69, 70, 71, 54, 55, 56, 66, 67,
     68, 51, 52, 53, 21, 36, 37, 38,

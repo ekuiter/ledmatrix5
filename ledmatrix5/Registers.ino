@@ -12,6 +12,7 @@ void Registers::setup() {
 void Registers::shift() {
   digitalWrite(latchPin, LOW);
   for (int i = REGISTER_NUMBER - 1; i >= 0; i--)
+    // uses the native Arduino implementation to shift out data
     shiftOut(dataPin, clockPin, MSBFIRST, ~(bits.bits[i]));
   digitalWrite(latchPin, HIGH);
 }

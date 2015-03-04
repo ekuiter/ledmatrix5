@@ -1,6 +1,7 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
+// Bitmap helpers, DO NOT change these
 #define INDEX(bit)  ((bit) / 8)
 #define OFFSET(bit) ((bit) % 8)
 #define SHIFT(bit)  (1 << OFFSET(bit))
@@ -12,11 +13,17 @@
   else \
     (bitmap)[INDEX(bit)] &= ~(SHIFT(bit))
 
+/*
+  Bitmap
+  This class stores a bitmap. Its size is static.
+*/
+
 class Bitmap {
   public:
-    byte bits[REGISTER_NUMBER];
+    byte bits[REGISTER_NUMBER]; // bitmap data (as many bytes as there are registers)
     bool get(int bit);
     void set(int bit, bool value);
+    // enables reading array access, e.g. bitmap[...] (no writing!)
     bool operator[](int bit);
 };
 

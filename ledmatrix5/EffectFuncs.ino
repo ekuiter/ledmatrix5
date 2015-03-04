@@ -23,8 +23,8 @@ void Effects::diagonalPath(Color color) {
 }
 
 void Effects::text(Color color) {
-  char buf[TEXT_BUF_SIZE];
-  Bridge.get("text", buf, TEXT_BUF_SIZE);
+  char buf[TEXT_MAX_LENGTH];
+  Bridge.get("text", buf, TEXT_MAX_LENGTH);
   currentText = String(buf);
   if (currentText.length())
     slideText(currentText, color);
