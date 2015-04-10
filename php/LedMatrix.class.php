@@ -1,11 +1,13 @@
 <?php
 
+require_once "config.inc.php";
 require_once "Connection.class.php";
 
 class LedMatrix {
-  private $connection;
+  private $connection, $host;
 
   public function __construct($host, $port) {
+    $this->host = $host;
     $this->connection = new Connection($host, $port);
     $this->connection->connect();
   }
@@ -25,5 +27,15 @@ class LedMatrix {
       $this->connection->write("$effect");
     else
       $this->connection->write("$effect,$color");
+  }
+
+  public function setText($text) {
+    global $username, $password;
+    $context = stream_context_create(array(
+      "http" => array(
+        "header"  => "Authorization: Basic " . base64_encode("$username:$password")
+      )
+    ));
+    file_get_contents("http://$this->host/data/put/text/$text", false, $context);
   }
 }

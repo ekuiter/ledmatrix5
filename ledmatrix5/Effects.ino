@@ -139,9 +139,15 @@ Image Effects::letterImage(char c) {
     0b0111110000111101000101110, // 6
     0b1111100001000100010001000, // 7
     0b0111010001011101000101110, // 8
-    0b0111010001011110000111110  // 9
+    0b0111010001011110000111110, // 9
+    // special chars
+    0b0000000000111110000000000, // -
+    // matrix-unique chars
+    0b0000000000011100000000000, // small dash
   };
   int idx;
+  if (c == '-') return letters[36];
+  if (c == '[') return letters[37];
   if (c >= 'A' && c <= 'Z')
     idx = c - 'A';
   else if (c >= '0' && c <= '9')

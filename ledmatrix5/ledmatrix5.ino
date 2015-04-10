@@ -76,7 +76,8 @@ void displayHook() {
   if (mode == MANUAL && effects.scheduledEffect.func == &Effects::text) {
     // If there is a new text, display it. Because the text effect has a long
     // duration (~150ms per slide frame), we can afford to query the Bridge.
-    char buf[TEXT_MAX_LENGTH];
+    char buf[TEXT_MAX_LENGTH + 1];
+    buf[TEXT_MAX_LENGTH] = 0;
     Bridge.get("text", buf, TEXT_MAX_LENGTH);
     if (effects.currentText != String(buf))
       mode = SWITCHING_MANUAL;
