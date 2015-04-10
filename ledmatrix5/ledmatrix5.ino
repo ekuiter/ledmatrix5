@@ -16,14 +16,14 @@ byte dataPin = 11;
 // These constants tell the board how long it should take to talk to Linino.
 // The default values should work out just fine. Change them if there are matrix "lags".
 #define AVG_DUMP_DURATION 25 // The board notifies Linino about the current matrix.
-#define AVG_HOOK_DURATION 10 // The board receives new commands from Linino.
+#define AVG_RECV_DURATION 10 // The board receives new commands from Linino.
 
 // A "random" seed is grabbed from this analog pin. Note that this
 // is not a perfect, but an easy way to create randomness.
 #define SEED_PIN          A0
 
 // Determines how long the text displayed by the text effect may be.
-#define TEXT_MAX_LENGTH   60
+#define TEXT_MAX_LENGTH   80
 
 // These constants can be altered, but the effects are made for a square
 // 5 by 5 matrix. If you change them, the effects might not work as
@@ -42,7 +42,7 @@ byte dataPin = 11;
 #include "Connection.h"
 
 Registers registers(clockPin, latchPin, dataPin);
-Leds leds(registers, &displayHook);
+Leds leds(registers, &receiveHook, &dumpHook);
 Effects effects(leds);
 Connection connection(effects);
 
@@ -71,19 +71,36 @@ void loop() {
   }
 }
 
-void displayHook() {
+int i;
+
+void receiveHook() {
   connection.receive();
   if (mode == MANUAL && effects.scheduledEffect.func == &Effects::text) {
-    // If there is a new text, display it. Because the text effect has a long
-    // duration (~150ms per slide frame), we can afford to query the Bridge.
-    char buf[TEXT_MAX_LENGTH + 1];
-    buf[TEXT_MAX_LENGTH] = 0;
-    Bridge.get("text", buf, TEXT_MAX_LENGTH);
-    String str = String(buf);
-    if (effects.currentText != str) {
-      effects.currentText = str;
-      effects.currentTextUpdated = true;
-      mode = SWITCHING_MANUAL;
+    if (i % 2 == 0) {
+      // If there is a new text, display it. Because the text effect has a long
+      // duration (~120ms per slide frame), we can afford to query the Bridge.
+      char buf[TEXT_MAX_LENGTH + 1];
+      buf[TEXT_MAX_LENGTH] = 0;
+      Bridge.get("text", buf, TEXT_MAX_LENGTH);
+      String str = String(buf);
+      if (effects.currentText != str) {
+        effects.currentText = str;
+        effects.currentTextUpdated = true;
+        mode = SWITCHING_MANUAL;
+      }
     }
+    i++;
   }
+}
+
+void dumpHook() {
+  String str;
+  for (int i = REGISTER_NUMBER - 1; i >= 0; i--) {
+    String hex = String(leds.leds.bits[i], HEX);
+    if (hex.length() == 1)
+      str += "0" + hex;
+    else
+      str += hex;
+  }
+  Mailbox.writeMessage(str);
 }

@@ -76,10 +76,10 @@ class Effects {
     void copyImageParts(Image& dst, Image& src, byte* from, byte* to, int partsSize);
     // slides the matrix to a new image in a given direction, duration is the duration for each slide frame,
     // if spacing = true an additional column / row is inserted
-    void slideToImage(Image image, Color color, Direction direction, int duration, bool spacing = false);
+    void slideToImage(Image image, Color color, Direction direction, int duration, bool spacing = false, int omittedRows = 0);
     Image letterImage(char c); // returns an image for the letters A-Z and digits 0-9
     // slides a text, similar to slideToImage(...)
-    void slideText(String text, Color color = WHITE, Direction direction = LEFT, int duration = 150);
+    void slideText(String text, Color color = WHITE, Direction direction = LEFT, int duration = 120);
     Time getTime(); // asks Linino for the current time and returns it
     void showClock(Time time, Color color, int duration); // draws a clock for the given time
 };

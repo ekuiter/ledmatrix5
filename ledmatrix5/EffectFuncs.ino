@@ -29,7 +29,7 @@ void Effects::text(Color color) {
     Bridge.get("text", buf, TEXT_MAX_LENGTH);
     currentText = String(buf);
   } else
-    currenTextUpdated = false;
+    currentTextUpdated = false;
   if (currentText.length())
     slideText(currentText, color);
   else

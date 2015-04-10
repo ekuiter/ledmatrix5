@@ -64,8 +64,9 @@ typedef union Image {
 
 class Leds {
   public:
-    // displayHook is called whenever there is enough time until the next display(...) call
-    Leds(Registers& registers, void (*displayHook)());
+    Bitmap leds; // holds the LED data (the virtual data)
+    // receiveHook / dumpHook are called whenever there is enough time until the next display(...) call
+    Leds(Registers& registers, void (*receiveHook)(), void (*dumpHook)());
     bool display(int duration = 0); // displays the current set of data for <duration> milliseconds
     // rotates the matrix by
     // pov = 0 => 0   degrees, pov = 1 => 90  degrees,
@@ -95,10 +96,10 @@ class Leds {
     void move(Direction direction);
   private:
     Registers& registers; // holds the hardware layer (and the actual data)
-    Bitmap leds; // holds the LED data (the virtual data)
     int pov; // point of view, sets the matrix rotation as described at pointOfView(...) above
     bool doAppend; // whether LEDs should prepend or append, see append(...) above
-    void (*displayHook)(); // see constructor Leds(...) above
+    void (*receiveHook)(); // see constructor Leds(...) above
+    void (*dumpHook)(); // see constructor Leds(...) above
     byte maps[4][LEDNUM] = { // maps virtual LEDs to the real hardware
       { 72, 73, 74, 69, 70, 71, 66, 67, // the array to the left represents the visual structure of the matrix
         68, 63, 64, 65, 60, 61, 62, 45, // 72,73,74 is the top left LED with the virtual COLOR address 0 and

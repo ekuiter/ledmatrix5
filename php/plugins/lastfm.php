@@ -19,7 +19,7 @@ function updateNowPlaying() {
 
   if ($newData != $oldData) {
     if ($newData["playing"]) {
-      $ledMatrix->setText(str_replace(" ", "_", $newData["track"]) . CHAR_SMALLDASH .
+      $ledMatrix->setText(str_replace(" ", "_", $newData["track"]) . "-" .
                           str_replace(" ", "_", $newData["artist"]));
       $ledMatrix->run(EFFECT_TEXT);
     } else

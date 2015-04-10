@@ -1,4 +1,4 @@
-Leds::Leds(Registers& r, void (*d)()): registers(r), displayHook(d) {
+Leds::Leds(Registers& r, void (*d1)(), void (*d2)()): registers(r), receiveHook(d1), dumpHook(d2) {
   randomSeed(analogRead(SEED_PIN));
   for (int i = 1; i < 4; i++)
     setupPointOfView(i);
@@ -7,7 +7,7 @@ Leds::Leds(Registers& r, void (*d)()): registers(r), displayHook(d) {
 // a bool is returned to determine whether the current effect should be cancelled (true) or not (false)
 bool Leds::display(int duration) {
   unsigned long waitUntil = millis() + duration;
-  displayHook();
+  receiveHook();
   if (mode == SWITCHING_LOOP || mode == SWITCHING_MANUAL)
     return true;
   mapLedsToBits();
@@ -16,25 +16,13 @@ bool Leds::display(int duration) {
   // needs to wait. This wait duration can be used instead of wasted:
   while (millis() < waitUntil) {
     if ((long) (waitUntil - millis()) > AVG_DUMP_DURATION)
-      dumpState(); // if there is enough time, tell Linino about the current matrix
-    if ((long) (waitUntil - millis()) > AVG_HOOK_DURATION)
-      displayHook(); // if there is enough time, ask Linino about new commands
+      dumpHook(); // if there is enough time, tell Linino about the current matrix
+    if ((long) (waitUntil - millis()) > AVG_RECV_DURATION)
+      receiveHook(); // if there is enough time, ask Linino about new commands
     if (mode == SWITCHING_LOOP || mode == SWITCHING_MANUAL)
       return true; // if Linino sent a new command, do not wait and unwind the stack
   }
   return false;
-}
-
-void Leds::dumpState() {
-  String str;
-  for (int i = REGISTER_NUMBER - 1; i >= 0; i--) {
-    String hex = String(leds.bits[i], HEX);
-    if (hex.length() == 1)
-      str += "0" + hex;
-    else
-      str += hex;
-  }
-  Mailbox.writeMessage(str);
 }
 
 void Leds::mapLedsToBits() {

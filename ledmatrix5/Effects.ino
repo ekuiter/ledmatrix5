@@ -67,7 +67,7 @@ void Effects::copyImageParts(Image& dst, Image& src, byte* from, byte* to, int p
   }
 }
 
-void Effects::slideToImage(Image image, Color color, Direction direction, int duration, bool spacing) {
+void Effects::slideToImage(Image image, Color color, Direction direction, int duration, bool spacing, int omittedRows) {
   byte to[][ROWS] = {
     { 20, 21, 22, 23, 24 }, // UP    (move up and append image's row to the bottom)
     { 0, 1, 2, 3, 4 },      // DOWN  (move down and append image's row to the top)
@@ -78,7 +78,7 @@ void Effects::slideToImage(Image image, Color color, Direction direction, int du
     leds.move(direction);
     DISPLAY(duration);
   }
-  for (int i = 0; i < ROWS; i++) {
+  for (int i = 0; i < ROWS - omittedRows; i++) {
     byte from[ROWS];
     if (direction == UP)
       for (int j = 0; j < ROWS; j++)
@@ -141,13 +141,10 @@ Image Effects::letterImage(char c) {
     0b0111010001011101000101110, // 8
     0b0111010001011110000111110, // 9
     // special chars
-    0b0000000000111110000000000, // -
-    // matrix-unique chars
-    0b0000000000011100000000000, // small dash
+    0b0000000000111110000000000 // -
   };
   int idx;
   if (c == '-') return letters[36];
-  if (c == '[') return letters[37];
   if (c >= 'A' && c <= 'Z')
     idx = c - 'A';
   else if (c >= '0' && c <= '9')
@@ -163,8 +160,14 @@ void Effects::slideText(String text, Color color, Direction direction, int durat
   text.toUpperCase();
   leds.setImage(letterImage(text.charAt(0)), color);
   DISPLAY(duration * 2);
-  for (int i = 1; i < length; i++)
-    slideToImage(letterImage(text.charAt(i)), color, direction, duration, true);
+  for (int i = 1; i < length; i++) {
+    char c = text.charAt(i);
+    Image img = letterImage(c);
+    int omittedRows = 0;
+    if (img.image == 0) omittedRows = 4;
+    if (c == '-') omittedRows = 2;
+    slideToImage(img, color, direction, duration, true, omittedRows);
+  }
   DISPLAY(duration * 2);
 }
 
