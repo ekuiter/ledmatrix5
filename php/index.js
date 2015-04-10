@@ -24,12 +24,14 @@ $(function() {
     e.preventDefault();
     effect = $("#effect").val();
     color = $("#color").val();
-    apiCall("run", effect, color);  
     if ($("#effect option:selected").text() == "text") {
       text = $("#text").val().replace(" ", "_");
       if (text === "") text = "_";
-      apiCall("text", text);
-    }
+      apiCall("text", text, function() {
+        apiCall("run", effect, color);
+      });
+    } else
+      apiCall("run", effect, color);
   });
 
   $("#effect").change(function() {

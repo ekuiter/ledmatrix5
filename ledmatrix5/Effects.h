@@ -52,6 +52,7 @@ class Effects {
     Effects(Leds& leds);
     Effect scheduledEffect; // holds the effect to be run next in MANUAL mode
     String currentText; // the text to be displayed by the text effect
+    bool currentTextUpdated; // is set to true on text updates to avoid multiple calls to Bridge
     void loop(); // the loop which is run in LOOP mode
     Effect find(effectFunc func); // returns the effect for an effect function pointer
     void run(Effect effect, Color color = UNDEF); // runs a given effect

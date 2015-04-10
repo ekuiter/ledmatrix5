@@ -23,7 +23,7 @@ byte dataPin = 11;
 #define SEED_PIN          A0
 
 // Determines how long the text displayed by the text effect may be.
-#define TEXT_MAX_LENGTH   32
+#define TEXT_MAX_LENGTH   60
 
 // These constants can be altered, but the effects are made for a square
 // 5 by 5 matrix. If you change them, the effects might not work as
@@ -79,7 +79,11 @@ void displayHook() {
     char buf[TEXT_MAX_LENGTH + 1];
     buf[TEXT_MAX_LENGTH] = 0;
     Bridge.get("text", buf, TEXT_MAX_LENGTH);
-    if (effects.currentText != String(buf))
+    String str = String(buf);
+    if (effects.currentText != str) {
+      effects.currentText = str;
+      effects.currentTextUpdated = true;
       mode = SWITCHING_MANUAL;
+    }
   }
 }
