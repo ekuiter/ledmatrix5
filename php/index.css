@@ -1,0 +1,47 @@
+.matrixContainer {
+  position: relative;
+  margin-top: 10px;
+}
+
+.matrixContainer .wrapper, .matrixContainer .overlay {
+  position: absolute;
+  width: 101px;
+  height: 101px;
+}
+
+.matrixContainer .overlay {
+  font-face: Arial;
+  font-size: 100px;
+  line-height: 1;
+  padding-left: 24px;
+}
+
+.matrix {
+  width: 101px;
+  height: 101px;
+  padding: 0;
+  border-left: 1px solid #666;
+  border-top: 1px solid #666;
+}
+
+.matrix li {
+  list-style: none;
+  width: 20px;
+  height: 20px;
+  float: left;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+}
+
+.white { background-color: white; }
+.yellow { background-color: yellow; }
+.magenta { background-color: magenta; }
+.cyan { background-color: cyan; }
+.red { background-color: red; }
+.green { background-color: green; }
+.blue { background-color: blue; }
+.none { background-color: #aaa; }
+
+#run #text {
+  display: none;
+}
