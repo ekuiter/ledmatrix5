@@ -32,7 +32,7 @@ function updateNowPlaying() {
 updateNowPlaying();
 
 $start = microtime(true);
-for ($i = 0; $i < 60 / $lastfmInterval; $i++) {
+for ($i = $lastfmInterval; ; $i += $lastfmInterval) {
   updateNowPlaying();
-  time_sleep_until($start + $i * $lastfmInterval + $lastfmInterval);
+  time_sleep_until($start + $i);
 }

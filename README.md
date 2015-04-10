@@ -22,14 +22,26 @@ You will need to rename ``config.inc.template.php`` to ``config.inc.php`` and in
 
 ### Plugins
 
-If you want to use the Last.fm plugin you need to call ``crontab -e`` and insert:
+If you want to use the Last.fm plugin you need to place this script in ``/etc/init.d/led-matrix``
+(given that the PHP script is placed in ``/www/led-matrix/``):
 ```
-* * * * * php-cgi /path/to/plugins/lastfm.php > /dev/null
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start() {
+  php-cgi /www/led-matrix/plugins/lastfm.php &
+}
+
+stop() {
+  kill $(pgrep php-cgi)
+}
 ```
-You also have to execute this in your terminal:
+Then make it executable and set it up:
 ```
-/etc/init.d/cron enable
-etc/init.d/cron start
+chmod +x /etc/init.d/led-matrix
+/etc/init.d/led-matrix enable
+/etc/init.d/led-matrix start
 ```
 
 Feel free to ask questions about this project: [info@elias-kuiter.de](mailto:info@elias-kuiter.de)
