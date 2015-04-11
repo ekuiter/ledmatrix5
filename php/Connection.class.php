@@ -13,21 +13,29 @@ class Connection {
 
   public function connect() {
     $socket = @pfsockopen($this->host, $this->port, $errno, $errstr);
-    if (!$socket || $errno !== 0)
-      throw new Exception("Connection Error #$errno: $errstr");
+    if (!$socket || $errno !== 0) {
+      if ($errno === 146 && $errstr === "Connection refused") {
+        system("reset-mcu");
+        sleep(5);
+        $socket = @pfsockopen($this->host, $this->port, $errno, $errstr);
+        if (!$socket || $errno !== 0)
+          throw new ConnectionException("Connection Error #$errno: $errstr");
+      } else
+        throw new ConnectionException("Connection Error #$errno: $errstr");
+    }
     $this->socket = $socket;
     @stream_set_timeout($this->socket, 0, $this->timeout * 1000);
   } 
 
   public function write($cmd) {
     if (!$this->socket)
-      throw new Exception("Not yet connected");
+      throw new ConnectionException("Not yet connected");
     @fputs($this->socket, "$cmd\n");
   }
 
   public function read($length) {
     if (!$this->socket)
-      throw new Exception("Not yet connected");
+      throw new ConnectionException("Not yet connected");
     return fread($this->socket, $length);
   }
 
@@ -36,3 +44,5 @@ class Connection {
       @fclose($this->socket);
   }
 }
+
+class ConnectionException extends Exception { }
