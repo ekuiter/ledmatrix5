@@ -22,26 +22,19 @@ You will need to rename ``config.inc.template.php`` to ``config.inc.php`` and in
 
 ### Plugins
 
-If you want to use the Last.fm plugin you need to place this script in ``/etc/init.d/led-matrix``
-(given that the PHP script is placed in ``/www/led-matrix/``):
-```
-#!/bin/sh /etc/rc.common
-
-START=99
-
-start() {
-  php-cgi /www/led-matrix/plugins/lastfm.php &
-}
-
-stop() {
-  kill $(pgrep php-cgi)
-}
-```
+If you want to use the Last.fm plugin you need to copy ``init.d/led-matrix`` to ``/etc/init.d/``.
+(I'll assume you installed the PHP script to ``/www/led-matrix``. If you did not, change the script accordingly.)
 Then make it executable and set it up:
 ```
 chmod +x /etc/init.d/led-matrix
 /etc/init.d/led-matrix enable
 /etc/init.d/led-matrix start
 ```
+You can add this to ``/etc/profile``:
+```
+PATH=$PATH:/etc/init.d
+export PATH
+```
+in order to make the ``led-matrix`` command available everywhere.
 
 Feel free to ask questions about this project: [info@elias-kuiter.de](mailto:info@elias-kuiter.de)

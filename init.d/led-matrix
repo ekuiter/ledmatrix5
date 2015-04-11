@@ -1,0 +1,37 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+EXTRA_COMMANDS="status kill reset log"
+EXTRA_HELP="        status  Whether the control script is running
+        kill    Kill the control script (use only if stop does nothing)
+        reset   Reset the µC and restart the control script
+        log     Show the control log"
+
+CONTROL_PATH=/www/led-matrix/control
+
+start() {
+  php-cgi $CONTROL_PATH/control.php &
+}
+
+stop() {
+  kill -9 $(pgrep -f "php-cgi $CONTROL_PATH/control.php") 2> /dev/null
+}
+
+status() {
+  PROCESSES=$(pgrep -f "php-cgi $CONTROL_PATH/control.php")
+  if [ -z "$PROCESSES" ]
+    then echo "Control script is not running"
+    else echo "Control script is running ($(echo $PROCESSES | wc -w) instances: $(echo $PROCESSES))"
+  fi
+}
+
+reset() {
+  stop
+  reset-mcu
+  start
+}
+
+log() {
+  tail -f $CONTROL_PATH/control.log
+}
