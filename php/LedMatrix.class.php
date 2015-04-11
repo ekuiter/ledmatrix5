@@ -1,8 +1,5 @@
 <?php
 
-require_once "config.inc.php";
-require_once "Connection.class.php";
-
 class LedMatrix {
   private $connection, $host;
 
@@ -36,6 +33,6 @@ class LedMatrix {
         "header"  => "Authorization: Basic " . base64_encode("$username:$password")
       )
     ));
-    file_get_contents("http://$this->host/data/put/text/$text", false, $context);
+    file_get_contents("http://$this->host/data/put/text/" . str_replace(" ", "_", $text), false, $context);
   }
 }

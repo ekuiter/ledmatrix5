@@ -1,14 +1,13 @@
 <?php
 
 require_once "config.inc.php";
-require_once "LedMatrix.class.php";
 
 $usage = "USAGE: api.php?getState|run,1,1|text,testtext";
 $query = explode(",", $_SERVER["QUERY_STRING"]);
 
 try {
   $port = $query[0] === "run" ? MATRIX_WRITE : MATRIX_READ;
-  $ledMatrix = new LedMatrix("localhost", $port);
+  $ledMatrix = new LedMatrix(MATRIX_HOST, $port);
 } catch (Exception $e) {
   die($e->getMessage()); 
 }
