@@ -34,42 +34,32 @@
   </div>
 </nav>
 <div class="container">
-  <div class="col-sm-10">
-    <h1>LED matrix</h1>
-    <form id="run" class="form-inline">
-      <select id="effect" class="form-control">
-        <option value="-1">loop</option>
-        <option value="1" selected>idle</option>
-        <option value="2">linearPath</option>
-        <option value="3">radiantPath</option>
-        <option value="4">diagonalPath</option>
-        <option value="5">text</option>
-        <option value="6">clock</option>
-      </select>
-      <select id="color" class="form-control">
-        <option value="-2">random</option>
-        <option value="-1">none</option>
-        <option value="0" selected>undef</option>
-        <option value="1">red</option>
-        <option value="2">green</option>
-        <option value="3">blue</option>
-        <option value="4">yellow</option>
-        <option value="5">magenta</option>
-        <option value="6">cyan</option>
-        <option value="7">white</option>
-      </select>
-      <input type="text" id="text" class="form-control" placeholder="text" />
-      <input type="submit" class="btn btn-primary" value="Run" />
-    </form>
-  </div>
-  <div class="col-sm-2">
-    <div class="matrixContainer">
-      <div class="wrapper">
-        <ul class="matrix"></ul>
-      </div>
-      <div class="overlay"></div>
-    </div>    
-  </div>
+  <h1>LED matrix</h1>
+  <form id="run" class="form-inline">
+    <select id="effect" class="form-control">
+      <option value="-1">loop</option>
+      <option value="1" selected>idle</option>
+      <option value="2">linearPath</option>
+      <option value="3">radiantPath</option>
+      <option value="4">diagonalPath</option>
+      <option value="5">text</option>
+      <option value="6">clock</option>
+    </select>
+    <select id="color" class="form-control">
+      <option value="-2">random</option>
+      <option value="-1">none</option>
+      <option value="0" selected>undef</option>
+      <option value="1">red</option>
+      <option value="2">green</option>
+      <option value="3">blue</option>
+      <option value="4">yellow</option>
+      <option value="5">magenta</option>
+      <option value="6">cyan</option>
+      <option value="7">white</option>
+    </select>
+    <input type="text" id="text" class="form-control" placeholder="text" />
+    <input type="submit" class="btn btn-primary" value="Run" />
+  </form>
 </div>
 </body>
 </html>
