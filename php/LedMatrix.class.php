@@ -19,11 +19,8 @@ class LedMatrix {
     return $json->data;
   }
 
-  public function run($effect, $color = NULL) {
-    if ($color === NULL)
-      $this->connection->write("$effect");
-    else
-      $this->connection->write("$effect,$color");
+  public function run($effect, $color = COLOR_UNDEF, $argument = -1) {
+    $this->connection->write("$effect,$color,$argument");
   }
 
   public function setText($text) {

@@ -2,7 +2,7 @@
 #define EFFECTS_H
 
 // change this if you add or remove effects
-#define EFFECT_NUMBER 7
+#define EFFECT_NUMBER 8
 
 // DO NOT change these definitions
 #define ROTATE      0b01 // whether an effect should rotate
@@ -16,7 +16,7 @@
 
 class Effects;
 
-typedef void (Effects::*effectFunc)(Color color); // effect function pointer type
+typedef void (Effects::*effectFunc)(Color color, int argument); // effect function pointer type
 
 typedef struct Effect { // an effect consists of ...
   effectFunc func;      // an effect function pointer
@@ -42,6 +42,7 @@ class Effects {
     Effect effects[EFFECT_NUMBER] = {
       { 0, NONE, NONE, 0 },
       { &Effects::idle, NONE, NONE, 1 },
+      { &Effects::light, WHITE, NONE, 1 },
       { &Effects::linearPath, NONE, ROTATE, 1 },
       { &Effects::radiantPath, NONE, ROTATE, 1 },
       { &Effects::diagonalPath, NONE, ROTATE, 1 },
@@ -55,20 +56,22 @@ class Effects {
     bool currentTextUpdated; // is set to true on text updates to avoid multiple calls to Bridge
     void loop(); // the loop which is run in LOOP mode
     Effect find(effectFunc func); // returns the effect for an effect function pointer
-    void run(Effect effect, Color color = UNDEF); // runs a given effect
-    void run(effectFunc func, Color color = UNDEF);
+    void run(Effect effect, Color color = UNDEF, int argument = -1); // runs a given effect
+    void run(effectFunc func, Color color = UNDEF, int argument = -1);
     void manual(); // runs the currently scheduledEffect
-    void schedule(Effect effect, Color color); // schedules a new effect
+    void schedule(Effect effect, Color color, int argument); // schedules a new effect
     // the actual effect functions defined in EffectFuncs.ino
-    void idle(Color color);
-    void linearPath(Color color);
-    void radiantPath(Color color);
-    void diagonalPath(Color color);
-    void text(Color color);
-    void clock(Color color);
+    void idle(Color color, int argument);
+    void light(Color color, int argument);
+    void linearPath(Color color, int argument);
+    void radiantPath(Color color, int argument);
+    void diagonalPath(Color color, int argument);
+    void text(Color color, int argument);
+    void clock(Color color, int argument);
   private:
     Effect lastEffect;
     Color scheduledColor;
+    int scheduledArgument;
     // creates an LED path, e.g. path = {0,1,,....,23,24}, pathSize = 25
     void followPath(byte* path, size_t pathSize, Color color, int duration);
     // copies src's LED states of the LEDs in "from" to dst's LED states of the LEDs in "to",

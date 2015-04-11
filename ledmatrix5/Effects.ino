@@ -14,7 +14,7 @@ Effect Effects::find(effectFunc func) {
   return effects[0];
 }
 
-void Effects::run(Effect effect, Color color) {
+void Effects::run(Effect effect, Color color, int argument) {
   if (color == UNDEF) color = effect.color;
   leds.reset((State) (effect.options & APPEND));
   bool rotate = effect.options & ROTATE;
@@ -23,25 +23,26 @@ void Effects::run(Effect effect, Color color) {
     if (rotate)
       for (int j = 0; j < 4; j++) {
         leds.pointOfView(j % 4);
-        (this->*effect.func)(color);
+        (this->*effect.func)(color, argument);
       }
     else
-      (this->*effect.func)(color);
+      (this->*effect.func)(color, argument);
     lastEffect = effect;
   }
 }
 
-void Effects::run(effectFunc func, Color color) {
+void Effects::run(effectFunc func, Color color, int argument) {
   run(find(func), color);
 }
 
 void Effects::manual() {
-  run(scheduledEffect, scheduledColor);
+  run(scheduledEffect, scheduledColor, scheduledArgument);
 }
 
-void Effects::schedule(Effect effect, Color color) {
+void Effects::schedule(Effect effect, Color color, int argument) {
   scheduledEffect = effect;
   scheduledColor = color;
+  scheduledArgument = argument;
 }
 
 void Effects::followPath(byte* path, size_t pathSize, Color color, int duration) {

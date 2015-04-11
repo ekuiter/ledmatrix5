@@ -17,9 +17,10 @@ void Connection::receive() {
 }
 
 void Connection::process() {
-  int delimiter;
+  int delimiter, delimiter2;
   int idx = getEffectIndex(delimiter);
-  Color color = getColor(delimiter);
+  Color color = getColor(delimiter, delimiter2);
+  int argument = getArgument(delimiter2);
   command = "";
   if (idx < 0)
     mode = SWITCHING_LOOP;
@@ -28,7 +29,7 @@ void Connection::process() {
     Effect effect = effects.effects[idx];
     if (effect.func) {
       mode = SWITCHING_MANUAL;
-      effects.schedule(effect, color);
+      effects.schedule(effect, color, argument);
     }
   }
 }
@@ -44,9 +45,21 @@ int Connection::getEffectIndex(int& delimiter) {
   return effectString.toInt();
 }
 
-Color Connection::getColor(int delimiter) {
+Color Connection::getColor(int delimiter, int& delimiter2) {
   if (delimiter == -1) return UNDEF;
-  String colorString = command.substring(delimiter + 1);
+  delimiter2 = command.indexOf(",", delimiter + 1);
+  String colorString;
+  if (delimiter2 == -1)
+    colorString = command.substring(delimiter + 1);
+  else
+    colorString = command.substring(delimiter + 1, delimiter2);
   colorString.trim();
   return effects.leds.numberToColor(colorString.toInt());
+}
+
+int Connection::getArgument(int delimiter2) {
+  if (delimiter2 == -1) return -1;
+  String argumentString = command.substring(delimiter2 + 1);
+  argumentString.trim();
+  return argumentString.toInt();
 }

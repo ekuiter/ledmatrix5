@@ -37,13 +37,11 @@
   <h1>LED matrix</h1>
   <form id="run" class="form-inline">
     <select id="effect" class="form-control">
-      <option value="-1">loop</option>
-      <option value="1" selected>idle</option>
-      <option value="2">linearPath</option>
-      <option value="3">radiantPath</option>
-      <option value="4">diagonalPath</option>
-      <option value="5">text</option>
-      <option value="6">clock</option>
+      <?php
+        require_once "config.inc.php";
+        foreach ($effects as $effect_name => $effect_index)
+          echo "<option value=\"$effect_index\">$effect_name</option>";
+      ?>
     </select>
     <select id="color" class="form-control">
       <option value="-2">random</option>

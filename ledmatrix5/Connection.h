@@ -17,9 +17,11 @@ class Connection {
     String command; // the current command
     void process(); // schedules a newly received command
     // returns an effect index from a command, e.g. "1,2" => 1
-    int getEffectIndex(int& effectIndex);
+    int getEffectIndex(int& delimiter);
     // returns a color from a command, e.g. "1,2" => GREEN
-    Color getColor(int idx);
+    Color getColor(int delimiter, int& delimiter2);
+    // returns an optional integer argument from a command
+    int getArgument(int delimiter2);
 };
 
 #endif

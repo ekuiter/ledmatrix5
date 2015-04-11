@@ -4,13 +4,21 @@ define("MATRIX_HOST",  "localhost");
 define("MATRIX_READ",  5700);
 define("MATRIX_WRITE", 6571);
 
-define("EFFECT_LOOP",        -1);
-define("EFFECT_IDLE",         1);
-define("EFFECT_LINEARPATH",   2);
-define("EFFECT_RADIANTPATH",  3);
-define("EFFECT_DIAGONALPATH", 4);
-define("EFFECT_TEXT",         5);
-define("EFFECT_CLOCK",        6);
+$effect_names = array("loop",
+                      "idle",
+                      "light",
+                      "linearPath",
+                      "radiantPath",
+                      "diagonalPath",
+                      "text",
+                      "clock");
+
+$effects = array();
+for ($i = 0; $i < count($effect_names); $i++) {
+  $effect_index = $i == 0 ? -1 : $i;
+  $effects[$effect_names[$i]] = $effect_index;
+  define("EFFECT_" . strtoupper($effect_names[$i]), $effect_index);
+}
 
 define("COLOR_RANDOM", -2);
 define("COLOR_NONE",   -1);

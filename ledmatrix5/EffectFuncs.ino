@@ -1,8 +1,13 @@
-void Effects::idle(Color color) {
+void Effects::idle(Color color, int argument) {
   DISPLAY(100);
 }
 
-void Effects::linearPath(Color color) {
+void Effects::light(Color color, int argument) {
+  leds.setAll(ON, color);
+  DISPLAY(100);
+}
+
+void Effects::linearPath(Color color, int argument) {
   for (int i = 0; i < LEDNUM; i++) {
     leds.setAll(OFF);
     leds.setRange(i - CYCLE_SPLIT, i + CYCLE_SPLIT, ON, color, OFF);
@@ -10,19 +15,19 @@ void Effects::linearPath(Color color) {
   }
 }
 
-void Effects::radiantPath(Color color) {
+void Effects::radiantPath(Color color, int argument) {
   byte path[] = { 0, 1, 2, 3, 4, 9, 14, 19, 24, 23, 22, 21, 20, 15, 10, 5, 6, 7, 8, 13, 18, 17, 16, 11, 12 };
   followPath(path, 25, color, 15);
   byte reversedPath[] = { 11, 16, 17, 18, 13, 8, 7, 6, 5, 10, 15, 20, 21, 22, 23, 24, 19, 14, 9 };
   followPath(reversedPath, 19, color, 15);
 }
 
-void Effects::diagonalPath(Color color) {
+void Effects::diagonalPath(Color color, int argument) {
   byte path[] = { 0, 5, 1, 10, 6, 2, 15, 11, 7, 3, 20, 16, 12, 8, 4, 21, 17, 13, 9, 22, 18, 14, 23, 19, 24 };
   followPath(path, 25, color, 30);
 }
 
-void Effects::text(Color color) {
+void Effects::text(Color color, int argument) {
   char buf[TEXT_MAX_LENGTH + 1];
   buf[TEXT_MAX_LENGTH] = 0;
   if (!currentTextUpdated) {
@@ -36,7 +41,7 @@ void Effects::text(Color color) {
     DISPLAY(100);
 }
 
-void Effects::clock(Color color) {
+void Effects::clock(Color color, int argument) {
   Time time = getTime(), incTime = { 0, 0 };
   if (lastEffect.func != &Effects::clock) {
     for (int j = 0; j < time.minutes; j++) {
