@@ -12,6 +12,6 @@ class IdlePlugin extends Plugin {
   public function stringifyData($data) {}
 
   protected function displayDataInternal($data) {
-    (new Effect("idle"))->run();
+    (new Effect("clock"))->run();
   }
 }
