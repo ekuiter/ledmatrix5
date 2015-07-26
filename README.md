@@ -1,8 +1,9 @@
 ## 5x5 LED matrix
 
 This is an Arduino Yun project I made some time ago.
-![LED matrix front](https://raw.githubusercontent.com/ekuiter/ledmatrix5/img/front.jpg)
-![LED matrix back](https://raw.githubusercontent.com/ekuiter/ledmatrix5/img/back.jpg)
+
+[![LED matrix front](https://raw.githubusercontent.com/ekuiter/ledmatrix5/img/front_small.jpg)](https://raw.githubusercontent.com/ekuiter/ledmatrix5/img/front.jpg)
+[![LED matrix front](https://raw.githubusercontent.com/ekuiter/ledmatrix5/img/back_small.jpg)](https://raw.githubusercontent.com/ekuiter/ledmatrix5/img/back.jpg)
 
 ### Getting started
 
