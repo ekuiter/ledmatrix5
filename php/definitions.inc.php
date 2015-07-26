@@ -5,13 +5,24 @@ define("MATRIX_READ",  5700);
 define("MATRIX_WRITE", 6571);
 
 $effect_names = array("loop",
-                      "idle",
-                      "light",
-                      "linearPath",
-                      "radiantPath",
-                      "diagonalPath",
-                      "text",
-                      "clock");
+  "idle",
+  "light",
+  "linearPath",
+  "radiantPath",
+  "diagonalPath",
+  "text",
+  "clock");
+
+$color_names = array("random",
+  "none",
+  "undef",
+  "red",
+  "green",
+  "blue",
+  "yellow",
+  "magenta",
+  "cyan",
+  "white");
 
 $effects = array();
 for ($i = 0; $i < count($effect_names); $i++) {
@@ -19,14 +30,12 @@ for ($i = 0; $i < count($effect_names); $i++) {
   $effects[$effect_names[$i]] = $effect_index;
   define("EFFECT_" . strtoupper($effect_names[$i]), $effect_index);
 }
+define("EFFECTS", serialize($effects));
 
-define("COLOR_RANDOM", -2);
-define("COLOR_NONE",   -1);
-define("COLOR_UNDEF",   0);
-define("COLOR_RED",     1);
-define("COLOR_GREEN",   2);
-define("COLOR_BLUE",    3);
-define("COLOR_YELLOW",  4);
-define("COLOR_MAGENTA", 5);
-define("COLOR_CYAN",    6);
-define("COLOR_WHITE",   7);
+$colors = array();
+for ($i = 0; $i < count($color_names); $i++) {
+  $color_index = $i - 2;
+  $colors[$color_names[$i]] = $color_index;
+  define("COLOR_" . strtoupper($color_names[$i]), $color_index);
+}
+define("COLORS", serialize($colors));

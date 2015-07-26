@@ -1,14 +1,14 @@
+var iframeInterval = 10;
+
 $(function() {
   $("#run").submit(function(e) {
     e.preventDefault();
-    effect = $("#effect").val();
-    color = $("#color").val();
-    if ($("#effect option:selected").text() == "text") {
-      text = $("#text").val().replace(" ", "_");
+    var effect = $("#effect option:selected").text();
+    var color = $("#color option:selected").text();
+    if (effect == "text") {
+      var text = $("#text").val().replace(" ", "_");
       if (text === "") text = "_";
-      apiCall("text", text, function() {
-        apiCall("run", effect, color);
-      });
+      apiCall("run", "text", color, text);
     } else
       apiCall("run", effect, color);
   });
@@ -19,18 +19,24 @@ $(function() {
     else
       $("#text").css("display", "none");
   });
+
+  window.setInterval(function() {
+    var $iframe = $("iframe");
+    $iframe.attr("src", $iframe.attr("src"));
+  }, iframeInterval * 1000);
 });
 
 apiCall = function(/* func, args ..., callback */) {
-  callback = arguments[arguments.length - 1];
-  end = typeof callback === "function" ? -1 : arguments.length;
-  args = Array.prototype.slice.call(arguments, 0, end).join(",");
+  var callback = arguments[arguments.length - 1];
+  var end = typeof callback === "function" ? -1 : arguments.length;
+  var args = Array.prototype.slice.call(arguments, 0, end).join("/");
   $.ajax("api.php?" + args).then(function(res) {
+    $("#status").text(res).removeClass();
     if (res.indexOf("Connection Error") === -1)
-      $("#status").text("Connected.").removeClass().addClass("text-success");
+      $("#status").addClass("text-success");
     else
-      $("#status").text("Connection failed.").removeClass().addClass("text-danger");
+      $("#status").addClass("text-danger");
     if (typeof callback === "function")
       callback(res);
-  }); 
+  });
 };

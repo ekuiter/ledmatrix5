@@ -39,25 +39,21 @@
     <select id="effect" class="form-control">
       <?php
         require_once "config.inc.php";
-        foreach ($effects as $effect_name => $effect_index)
-          echo "<option value=\"$effect_index\">$effect_name</option>";
+        foreach ($effects as $effectName => $effectId)
+          echo "<option>$effectName</option>";
       ?>
     </select>
     <select id="color" class="form-control">
-      <option value="-2">random</option>
-      <option value="-1">none</option>
-      <option value="0" selected>undef</option>
-      <option value="1">red</option>
-      <option value="2">green</option>
-      <option value="3">blue</option>
-      <option value="4">yellow</option>
-      <option value="5">magenta</option>
-      <option value="6">cyan</option>
-      <option value="7">white</option>
+      <?php
+      foreach ($colors as $colorName => $colorId)
+        echo "<option" . ($colorName == "undef" ? " selected" : "") . ">$colorName</option>";
+      ?>
     </select>
     <input type="text" id="text" class="form-control" placeholder="text" />
     <input type="submit" class="btn btn-primary" value="Run" />
   </form>
+  <hr />
+  <iframe src="control/control.log" style="width: 100%;" height="400"></iframe>
 </div>
 </body>
 </html>
