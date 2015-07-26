@@ -25,7 +25,6 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav navbar-left">
-        <li class="active"><a href="#">Home</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a><span id="error" class="text-danger"></span></a></li>
@@ -35,26 +34,36 @@
   </div>
 </nav>
 <div class="container">
-  <h1>LED matrix</h1>
-  <form id="run" class="form-inline">
-    <select id="effect" class="form-control">
-      <?php
-        require_once "config.inc.php";
-        foreach ($effects as $effectName => $effectId)
-          echo "<option>$effectName</option>";
-      ?>
-    </select>
-    <select id="color" class="form-control">
-      <?php
-      foreach ($colors as $colorName => $colorId)
-        echo "<option" . ($colorName == "undef" ? " selected" : "") . ">$colorName</option>";
-      ?>
-    </select>
-    <input type="text" id="text" class="form-control" placeholder="text" />
-    <input type="submit" class="btn btn-primary" value="Run" />
-  </form>
+  <div class="row" style="margin-top: 20px">
+    <div class="col-lg-8" style="margin-bottom: 10px">
+      <form id="run" class="form-inline">
+        <strong style="padding-right: 10px">Manual mode</strong>
+        <select id="effect" class="form-control">
+          <?php
+          require_once "config.inc.php";
+          foreach ($effects as $effectName => $effectId)
+            echo "<option>$effectName</option>";
+          ?>
+        </select>
+        <select id="color" class="form-control">
+          <?php
+          foreach ($colors as $colorName => $colorId)
+            echo "<option" . ($colorName == "undef" ? " selected" : "") . ">$colorName</option>";
+          ?>
+        </select>
+        <input type="text" id="text" class="form-control" placeholder="text" />
+        <input type="submit" class="btn btn-primary" value="Run" />
+      </form>
+    </div>
+    <div class="col-lg-4">
+      <strong style="padding-right: 10px">Plugin mode</strong>
+      <a id="pluginMode" class="btn btn-primary">Run</a>
+      <strong style="padding: 0 10px">Tools</strong>
+      <a id="off" class="btn btn-primary">Off</a> <a id="on" class="btn btn-primary">On</a>
+    </div>
+  </div>
   <hr />
-  <h3>Control script log <span class="log badge">Loading ...</span></h3>
+  <h3>Control script log <span class="log badge"></span></h3>
   <pre id="log"></pre>
 </div>
 </body>

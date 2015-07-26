@@ -1,3 +1,11 @@
-#run #text, .log.badge {
+#run #text {
   display: none;
+}
+
+.log.badge {
+    display: inline-block !important;
+    min-width: 0 !important;
+    height: 5px;
+    padding: 0;
+    margin-left: 10px;
 }

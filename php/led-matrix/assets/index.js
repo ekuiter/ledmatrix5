@@ -1,4 +1,6 @@
 var updateInterval = 5;
+var loadingMaxWidth = 100;
+var intervals = [];
 
 $(function() {
   $("#run").submit(function(e) {
@@ -20,24 +22,44 @@ $(function() {
       $("#text").css("display", "none");
   });
 
-  function loadLog() {
-    $(".log.badge").css("display", "inline");
+  $("#off").click(function() {
+    $.ajax("api.php?run/idle");
+  });
+
+  $("#on").click(function() {
+    $.ajax("api.php?run/light");
+  });
+
+  $("#pluginMode").click(function() {
+    $.ajax("api.php?control/start");
+  });
+
+  function update() {
+    intervals.forEach(function(interval) {
+      window.clearInterval(interval);
+    });
+
     $.ajax("api.php?control/log").then(function(res) {
       $("#log").text(res);
-      $(".log.badge").css("display", "none");
+      var nextUpdate = Date.now() + updateInterval * 1000;
+      intervals.push(window.setInterval(function() {
+        var remainingMs = (updateInterval * 1000) - (nextUpdate - Date.now());
+        $(".log.badge").width(remainingMs / (updateInterval * 1000 / loadingMaxWidth));
+      }, 50));
     });
-  }
 
-  function loadState() {
     $.ajax("api.php?state").then(function(res) {
       $("#state").text(res);
+      var state = JSON.parse(res);
+      if (state["mode"] == "manual")
+        $("#pluginMode").attr("disabled", false);
+      else
+        $("#pluginMode").attr("disabled", true);
     });
   }
 
-  loadLog();
-  loadState();
-  window.setInterval(loadLog, updateInterval * 1000);
-  window.setInterval(loadState, updateInterval * 1000);
+  update();
+  window.setInterval(update, updateInterval * 1000);
 });
 
 apiCall = function(/* func, args ..., callback */) {
