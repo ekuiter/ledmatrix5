@@ -1,6 +1,8 @@
 <?php
 
-$ob_file = fopen("control.log", "w");
+require_once "config.inc.php";
+
+$ob_file = fopen($GLOBALS["logFile"], "w");
 
 function ob_file_callback($buffer) {
   global $ob_file;
@@ -8,7 +10,5 @@ function ob_file_callback($buffer) {
 }
 
 ob_start("ob_file_callback");
-
-require_once "include/config.inc.php";
 
 $control->loop();
