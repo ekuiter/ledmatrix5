@@ -54,7 +54,7 @@
   </form>
   <hr />
   <h3>Control script log</h3>
-  <iframe src="log.php" style="width: 100%; border: none" height="500" scrolling="no"></iframe>
+  <iframe src="api.php?control/log" style="width: 100%; border: none" height="500" scrolling="no"></iframe>
 </div>
 </body>
 </html>

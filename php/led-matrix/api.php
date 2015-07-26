@@ -6,7 +6,14 @@ header("Content-Type: text/plain");
 
 $usage = "USAGE:
 api.php?state
+api.php?control/command
 api.php?run/effect[/color[/argument]]
+
+ALLOWED COMMANDS:
+  stop
+  reset
+  status
+  log
 
 ALLOWED EFFECTS:\n";
 foreach (unserialize(EFFECTS) as $effectName => $effectId)
@@ -22,7 +29,11 @@ $query = explode("/", $queryString);
 try {
   if ($queryString == "state")
     echo (new LedMatrix(MATRIX_HOST, MATRIX_READ))->getState();
-  else if ($query[0] === "run") {
+  else if ($query[0] === "control") {
+    if (!isset($query[1]) || empty($query[1]))
+      die($usage);
+    echo $control->runCommand($query[1]);
+  } else if ($query[0] === "run") {
     if (!isset($query[1]) || empty($query[1]))
       die($usage);
     $effect = $query[1];
