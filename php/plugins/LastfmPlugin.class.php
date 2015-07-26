@@ -9,7 +9,10 @@ class LastfmPlugin extends Plugin {
   }
 
   public function fetchData() {
-    $data = json_decode(file_get_contents("http://ajax.last.fm/user/$this->username/now"));
+    $rawData = @file_get_contents("http://ajax.last.fm/user/$this->username/now");
+    if (!$rawData)
+      throw new PluginException("Could not connect to last.fm.");
+    $data = json_decode($rawData);
     return array("playing" => $data->nowplaying,
                    "track" => (string) $data->track->name,
                   "artist" => (string) $data->track->artist->name);

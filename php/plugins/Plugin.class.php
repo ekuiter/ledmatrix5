@@ -34,3 +34,5 @@ abstract class Plugin {
     return time() >= $this->lastStored + $this->interval;
   }
 }
+
+class PluginException extends Exception {}

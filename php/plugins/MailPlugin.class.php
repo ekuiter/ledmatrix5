@@ -7,7 +7,12 @@ class MailPlugin extends Plugin {
   }
 
   public function fetchData() {
-    return array("unread" => (int) `imapfilter -c ../plugins/mail_config.lua`);
+    $res = `imapfilter -c ../plugins/data/mail_config.lua 2>&1`;
+    if (stristr($res, "No such file or directory"))
+      throw new PluginException("mail_config.lua file not found.");
+    if (stristr($res, "Name or service not known"))
+      throw new PluginException("Could not connect to mail server.");
+    return array("unread" => (int) $res);
   }
 
   public function isNewData($data) {
