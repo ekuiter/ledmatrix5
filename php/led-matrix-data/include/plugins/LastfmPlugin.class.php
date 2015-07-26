@@ -33,8 +33,7 @@ class LastfmPlugin extends Plugin {
       return "$this->username is not listening to music right now.";
   }
 
-  public function displayData($data, $ledMatrix) {
-    $ledMatrix->setText($data["track"] . "-" . $data["artist"]);
-    $ledMatrix->run(EFFECT_TEXT);
+  protected function displayDataInternal($data) {
+    (new Effect("text"))->run(COLOR_UNDEF, $data["track"] . "-" . $data["artist"]);
   }
 }

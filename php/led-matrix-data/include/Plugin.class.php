@@ -6,7 +6,7 @@ abstract class Plugin {
 
   function __construct($pluginName, $interval) {
     $this->pluginName = $pluginName;
-    $this->store = "$pluginName.dat";
+    $this->store = "$GLOBALS[dataPath]/$pluginName.dat";
     $this->interval = $interval;
   }
 
@@ -14,7 +14,12 @@ abstract class Plugin {
   abstract public function isNewData($data);
   abstract public function isRelevantData($data);
   abstract public function stringifyData($data);
-  abstract public function displayData($data, $ledMatrix);
+  abstract protected function displayDataInternal($data);
+
+  public function displayData($data = NULL) {
+    State::setPlugin($this);
+    $this->displayDataInternal($data);
+  }
 
   public function loadData() {
     if (file_exists($this->store))

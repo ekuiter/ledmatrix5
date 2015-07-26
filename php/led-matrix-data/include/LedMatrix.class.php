@@ -9,12 +9,12 @@ class LedMatrix {
     $this->connection->connect();
   }
   
-  private function readState() {
+  private function readLedState() {
     return $this->connection->read(47);
   }
 
-  public function getState() {
-    $data = $this->readState();
+  public function getLedState() {
+    $data = $this->readLedState();
     $json = json_decode($data);
     return $json->data;
   }

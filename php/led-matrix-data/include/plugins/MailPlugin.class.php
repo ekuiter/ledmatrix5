@@ -7,7 +7,7 @@ class MailPlugin extends Plugin {
   }
 
   public function fetchData() {
-    $res = `imapfilter -c mail_config.lua 2>&1`;
+    $res = `imapfilter -c $GLOBALS[dataPath]/mail_config.lua 2>&1`;
     if (stristr($res, "No such file or directory"))
       throw new PluginException("mail_config.lua file not found.");
     if (stristr($res, "Name or service not known"))
@@ -30,8 +30,7 @@ class MailPlugin extends Plugin {
       return "There are $data[unread] unread mails in your inbox.";
   }
 
-  public function displayData($data, $ledMatrix) {
-    $ledMatrix->setText($data["unread"] . ($data["unread"] == 1 ? " mail" : " mails"));
-    $ledMatrix->run(EFFECT_TEXT);
+  protected function displayDataInternal($data) {
+    (new Effect("text"))->run(COLOR_UNDEF, $data["unread"] . ($data["unread"] == 1 ? " mail" : " mails"));
   }
 }

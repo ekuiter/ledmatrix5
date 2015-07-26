@@ -1,15 +1,15 @@
 <?php
 
 class Control {
-  private $plugins, $ledMatrix;
+  private $plugins, $idlePlugin;
 
   function __construct($plugins) {
     $this->plugins = $plugins;
-    $this->ledMatrix = new LedMatrix(MATRIX_HOST, MATRIX_WRITE);
+    $this->idlePlugin = new IdlePlugin();
   }
 
   public function loop() {
-    echo "Control started.\n";
+    $this->idlePlugin->displayData();
     $start = microtime(true);
 
     for ($i = 1; ; $i++) {
@@ -20,14 +20,16 @@ class Control {
             $isNewData = $plugin->isNewData($data);
             $isRelevantData = $plugin->isRelevantData($data);
             if ($isRelevantData && $isNewData)
-              $plugin->displayData($data, $this->ledMatrix);
+              $plugin->displayData($data);
+            if (State::isPlugin($plugin) && !$isRelevantData)
+              $this->idlePlugin->displayData();
             $label = $isNewData ? " !" : "=>";
             $label = $isRelevantData ? $label : " .";
-            echo "$label $plugin->pluginName: " . $plugin->stringifyData($data) . "\n";
+            echo "[" . date("d.m.Y H:i:s") . "] $label $plugin->pluginName: " . $plugin->stringifyData($data) . "\n";
             $plugin->storeData($data);
           }
         } catch (PluginException $e) {
-          echo " x $plugin->pluginName: " . $e->getMessage() . "\n";
+          echo "[" . date("d.m.Y H:i:s") . "]  x $plugin->pluginName: " . $e->getMessage() . "\n";
         }
       }
 
@@ -37,19 +39,18 @@ class Control {
   }
 
   public function log() {
-    $logFile = "$GLOBALS[ledMatrixDataPath]/control.log";
     $numberOfLines = 30;
 
     header("Content-Type: text/plain");
     $status = $this->runCommand("status");
     $return = "$status\n";
-    if (!file_exists($logFile))
+    if (!file_exists($GLOBALS["logFile"]))
       throw new Exception("No log file found!");
     if (stristr($status, "not running"))
       throw new Exception("Control script is not running");
 
     $lines = array();
-    $fp = fopen($logFile, "r");
+    $fp = fopen($GLOBALS["logFile"], "r");
     while (!feof($fp)) {
       $line = fgets($fp, 4096);
       $lines[] = $line;
@@ -63,17 +64,14 @@ class Control {
   }
 
   public function runCommand($command) {
-    $commands = array("start", "stop", "reset", "status", "log");
+    $commands = array("start", "stop", "status", "log");
     if (!in_array($command, $commands))
       throw new InvalidArgumentException("invalid command");
     if ($command == "start")
       // does not work, see http://stackoverflow.com/questions/566248, help appreciated
-      //return `/etc/init.d/led-matrix start`;
-      return "";
+      return `/etc/init.d/led-matrix start`;
     else if ($command == "log")
       return $this->log();
-    else if ($command == "reset")
-      return `reset-mcu`;
     else
       return `/etc/init.d/led-matrix $command`;
   }
