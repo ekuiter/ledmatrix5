@@ -53,7 +53,7 @@ Connection connection(effects);
 // are cancelled so that the switch can happen ASAP
 enum mode {
   LOOP, MANUAL, SWITCHING_LOOP, SWITCHING_MANUAL
-} mode = LOOP;
+} mode = MANUAL;
 
 void setup() {
   connection.setup();

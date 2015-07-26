@@ -51,7 +51,7 @@ class Effects {
     };
     Leds& leds;
     Effects(Leds& leds);
-    Effect scheduledEffect; // holds the effect to be run next in MANUAL mode
+    Effect scheduledEffect = effects[7]; // holds the effect to be run next in MANUAL mode
     String currentText; // the text to be displayed by the text effect
     bool currentTextUpdated; // is set to true on text updates to avoid multiple calls to Bridge
     void loop(); // the loop which is run in LOOP mode
@@ -70,8 +70,8 @@ class Effects {
     void clock(Color color, int argument);
   private:
     Effect lastEffect;
-    Color scheduledColor;
-    int scheduledArgument;
+    Color scheduledColor = UNDEF;
+    int scheduledArgument = -1;
     // creates an LED path, e.g. path = {0,1,,....,23,24}, pathSize = 25
     void followPath(byte* path, size_t pathSize, Color color, int duration);
     // copies src's LED states of the LEDs in "from" to dst's LED states of the LEDs in "to",
