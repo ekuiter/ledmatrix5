@@ -5,6 +5,10 @@
 // insert the path to the led-matrix-data directory (no trailing slash)
 $GLOBALS["dataPath"] = $dataPath = "/root/led-matrix-data";
 
+// insert this in init.d/led-matrix too!
+$GLOBALS["controlPass"] = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+// Arduino Yun credentials
 $username = "root";
 $password = "your password here";
 
