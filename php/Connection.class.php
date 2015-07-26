@@ -36,7 +36,7 @@ class Connection {
   public function read($length) {
     if (!$this->socket)
       throw new ConnectionException("Not yet connected");
-    return fread($this->socket, $length);
+    return @fread($this->socket, $length);
   }
 
   public function __destruct() {

@@ -6,7 +6,7 @@ This is an Arduino Yun project I made some time ago.
 
 The Arduino sketch is located in the folder ``ledmatrix5``, the code is commented in the important places.
 
-The Linino PHP script is located in the ```php``` folder. You can use it to control the LED matrix remotely,
+The Linino PHP script is located in the ``php`` folder. You can use it to control the LED matrix remotely,
 but it is optional. If you decide to use it, put it in the Yun's ``/www/`` directory and run:
 ```
 opkg install php5 php5-cgi php5-mod-json
