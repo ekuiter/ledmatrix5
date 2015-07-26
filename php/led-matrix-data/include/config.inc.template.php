@@ -3,6 +3,8 @@
 $username = "root";
 $password = "your password here";
 
+date_default_timezone_set("Europe/Berlin");
+
 require_once "definitions.inc.php";
 require_once "Connection.class.php";
 require_once "LedMatrix.class.php";

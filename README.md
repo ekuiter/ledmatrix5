@@ -14,9 +14,10 @@ You might want to adjust the LED map in `ledmatrix5/Leds.h` (line 103).
 The Linino PHP script is located in the `php` folder. You can use it to control the LED matrix remotely,
 but it is optional. If you decide to use it run the following in a SSH shell:
     
-    opkg install php5 php5-cgi php5-mod-json
+    opkg update
+    opkg install php5 php5-cgi php5-mod-json zoneinfo-core zoneinfo-europe
     uci set uhttpd.main.index_page=index.php
-    uci commit 
+    uci commit
     /etc/init.d/uhttpd restart
 
 Copy the `php/led-matrix` folder to the Yun's `/www` folder - it contains the HTTP user interface.
