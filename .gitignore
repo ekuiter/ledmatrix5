@@ -1,4 +1,4 @@
-php/.idea/*
 .idea/*
-php/config.inc.php
-php/plugins/data/mail_config.lua
+php/led-matrix-data/include/config.inc.php
+php/led-matrix/config.inc.php
+php/led-matrix-data/mail_config.lua

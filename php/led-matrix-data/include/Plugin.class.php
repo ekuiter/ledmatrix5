@@ -6,7 +6,7 @@ abstract class Plugin {
 
   function __construct($pluginName, $interval) {
     $this->pluginName = $pluginName;
-    $this->store = "../plugins/data/$pluginName.dat";
+    $this->store = "$pluginName.dat";
     $this->interval = $interval;
   }
 

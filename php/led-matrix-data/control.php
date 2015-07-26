@@ -9,6 +9,6 @@ function ob_file_callback($buffer) {
 
 ob_start("ob_file_callback");
 
-require_once "../config.inc.php";
+require_once "include/config.inc.php";
 
 $control->loop();

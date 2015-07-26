@@ -5,11 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LED matrix</title>
-<link href="bootstrap.min.css" rel="stylesheet">
-<link href="index.css" rel="stylesheet">
-<script src="jquery.min.js"></script>
-<script src="bootstrap.min.js"></script>
-<script src="index.js"></script>
+<link href="assets/bootstrap.min.css" rel="stylesheet">
+<link href="assets/index.css" rel="stylesheet">
+<script src="assets/jquery.min.js"></script>
+<script src="assets/bootstrap.min.js"></script>
+<script src="assets/index.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-inverse" role="navigation">

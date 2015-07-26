@@ -7,7 +7,7 @@ class MailPlugin extends Plugin {
   }
 
   public function fetchData() {
-    $res = `imapfilter -c ../plugins/data/mail_config.lua 2>&1`;
+    $res = `imapfilter -c mail_config.lua 2>&1`;
     if (stristr($res, "No such file or directory"))
       throw new PluginException("mail_config.lua file not found.");
     if (stristr($res, "Name or service not known"))
