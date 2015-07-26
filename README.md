@@ -28,14 +28,9 @@ to `config.inc.php` and, in the latter, insert your Yun's root password (and mod
 (You *can* install the PHP script to other directories than `/www` and `/root` (though it is not recommended).
 To do this, you need to adjust the following files: `php/led-matrix/config.inc.php` and `init.d/led-matrix`.)
 
-### Try it!
-
-By now, you should be able to open the web interface in your browser, e.g. like this: `http://192.168.240.1/led-matrix/`.
-Setting effects and colors should work just fine. If you don't want to use plugins, just stop here.
-
 ### Plugins
 
-If you want to use plugins you need to copy `init.d/led-matrix` to `/etc/init.d/`.
+To use plugins you need to copy `init.d/led-matrix` to `/etc/init.d/`.
 (I'll assume you copied the `led-matrix-data` folder to `/root/led-matrix-data`. If you did not, change the script accordingly.)
 Then make it executable and set it up:
 

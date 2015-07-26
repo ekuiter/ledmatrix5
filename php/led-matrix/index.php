@@ -53,7 +53,8 @@
     <input type="submit" class="btn btn-primary" value="Run" />
   </form>
   <hr />
-  <iframe src="control/control.log" style="width: 100%;" height="400"></iframe>
+  <h3>Control script log</h3>
+  <iframe src="log.php" style="width: 100%; border: none" height="500" scrolling="no"></iframe>
 </div>
 </body>
 </html>
