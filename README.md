@@ -26,8 +26,8 @@ Then copy the `php/led-matrix-data` folder to `/root` - this folder contains the
 I found it useful to run `opkg install openssh-sftp-server` as well to upload the `php/led-matrix` and `php/led-matrix-data`
 folders quickly with SFTP, but that's up to you.
 
-You will need to rename both `/www/led-matrix/config.inc.template.php` and `/root/led-matrix-data/include/config.inc.template.php`
-to `config.inc.php` and, in the latter, insert your Yun's root password (and modify your plugin settings).
+You will need to rename `/www/led-matrix/config.inc.template.php` to `config.inc.php` and insert your Yun's root password
+(and modify your plugin settings).
 
 (You *can* install the PHP script to other directories than `/www` and `/root` (though it is not recommended).
 To do this, you need to adjust the following files: `php/led-matrix/config.inc.php` and `init.d/led-matrix`.)
@@ -51,12 +51,12 @@ in order to make the `led-matrix` command available everywhere, or just use `/et
 
 ### Available plugins
 
-Make sure to adjust `/root/led-matrix-data/include/config.inc.php` to include your plugins of choice!
+Make sure to adjust `php/led-matrix/config.inc.php` to include your plugins of choice!
 
 #### Last.fm
 
 This plugin displays your recently played tracks on the matrix.
-Insert your username in `/root/led-matrix-data/include/config.inc.php` and make sure your recent scrobbels on Last.fm are public.
+Insert your username in `php/led-matrix/config.inc.php` and make sure your recent scrobbels on Last.fm are public.
 
 #### IMAP mail
 

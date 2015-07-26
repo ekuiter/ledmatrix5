@@ -28,7 +28,8 @@
         <li class="active"><a href="#">Home</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a><span id="status"></span></a></li>
+        <li><a><span id="error" class="text-danger"></span></a></li>
+        <li><a><span id="state" style="color: #ddd"></span></a></li>
       </ul>
     </div>
   </div>

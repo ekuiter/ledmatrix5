@@ -6,12 +6,12 @@ header("Content-Type: text/plain");
 
 $usage = "USAGE:
 api.php?state
+api.php?ledState
 api.php?control/command
 api.php?run/effect[/color[/argument]]
 
 ALLOWED COMMANDS:
   stop
-  reset
   status
   log
 
@@ -28,7 +28,9 @@ $query = explode("/", $queryString);
 
 try {
   if ($queryString == "state")
-    echo (new LedMatrix(MATRIX_HOST, MATRIX_READ))->getState();
+    echo json_encode(State::get());
+  else if ($queryString == "ledState")
+    echo (new LedMatrix(MATRIX_HOST, MATRIX_READ))->getLedState();
   else if ($query[0] === "control") {
     if (!isset($query[1]) || empty($query[1]))
       die($usage);
@@ -43,6 +45,8 @@ try {
     if (isset($query[3]) && !empty($query[3]))
       $argument = $query[3];
     else $argument = -1;
+    $control->runCommand("stop");
+    State::setManual();
     (new Effect($effect))->run($color, $argument);
   } else
     die($usage);
