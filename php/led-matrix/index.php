@@ -53,8 +53,8 @@
     <input type="submit" class="btn btn-primary" value="Run" />
   </form>
   <hr />
-  <h3>Control script log</h3>
-  <iframe src="api.php?control/log" style="width: 100%; border: none" height="500" scrolling="no"></iframe>
+  <h3>Control script log <span class="log badge">Loading ...</span></h3>
+  <pre id="log"></pre>
 </div>
 </body>
 </html>

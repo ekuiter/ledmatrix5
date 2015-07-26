@@ -1,4 +1,4 @@
-var iframeInterval = 10;
+var logInterval = 5;
 
 $(function() {
   $("#run").submit(function(e) {
@@ -20,10 +20,16 @@ $(function() {
       $("#text").css("display", "none");
   });
 
-  window.setInterval(function() {
-    var $iframe = $("iframe");
-    $iframe.attr("src", $iframe.attr("src"));
-  }, iframeInterval * 1000);
+  function loadLog() {
+    $(".log.badge").css("display", "inline");
+    $.ajax("api.php?control/log").then(function(res) {
+      $("#log").text(res);
+      $(".log.badge").css("display", "none");
+    });
+  }
+
+  loadLog();
+  window.setInterval(loadLog, logInterval * 1000);
 });
 
 apiCall = function(/* func, args ..., callback */) {
