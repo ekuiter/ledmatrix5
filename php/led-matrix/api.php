@@ -11,6 +11,7 @@ api.php?control/command
 api.php?run/effect[/color[/argument]]
 
 ALLOWED COMMANDS:
+  start
   stop
   reset
   status
@@ -29,7 +30,7 @@ $query = explode("/", $queryString);
 
 try {
   if ($queryString == "state")
-    echo json_encode(State::get());
+    echo State::get()->getJSON();
   else if ($queryString == "ledState")
     echo (new LedMatrix(MATRIX_HOST, MATRIX_READ))->getLedState();
   else if ($query[0] === "control") {
@@ -46,8 +47,7 @@ try {
     if (isset($query[3]) && !empty($query[3]))
       $argument = $query[3];
     else $argument = -1;
-    $control->runCommand("stop");
-    State::setManual();
+    State::setManual($effect, true);
     (new Effect($effect))->run($color, $argument);
   } else
     die($usage);

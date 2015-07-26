@@ -9,27 +9,38 @@ class Control {
   }
 
   public function loop() {
-    $this->idlePlugin->displayData();
     $start = microtime(true);
 
     for ($i = 1; ; $i++) {
       foreach ($this->plugins as $plugin) {
-        try {
-          if ($plugin->isInvalid()) {
-            $data = $plugin->fetchData();
-            $isNewData = $plugin->isNewData($data);
-            $isRelevantData = $plugin->isRelevantData($data);
-            if ($isRelevantData && $isNewData)
-              $plugin->displayData($data);
-            if (State::isPlugin($plugin) && !$isRelevantData)
-              $this->idlePlugin->displayData();
-            $label = $isNewData ? " !" : "=>";
-            $label = $isRelevantData ? $label : " .";
-            echo "[" . date("d.m.Y H:i:s") . "] $label $plugin->pluginName: " . $plugin->stringifyData($data) . "\n";
-            $plugin->storeData($data);
+        $state = State::get();
+        if ($state->isManual()) {
+          if ($state->isSwitching()) {
+            echo "[" . date("d.m.Y H:i:s") . "]    Switching to manual mode (effect: {$state->getEffect()}).\n";
+            $state->setSwitching(false);
           }
-        } catch (PluginException $e) {
-          echo "[" . date("d.m.Y H:i:s") . "]  x $plugin->pluginName: " . $e->getMessage() . "\n";
+        } else {
+          if ($state->isSwitching()) {
+            echo "[" . date("d.m.Y H:i:s") . "]    Switching to plugin mode.\n";
+            $this->idlePlugin->displayData();
+          }
+          try {
+            if ($plugin->isInvalid()) {
+              $data = $plugin->fetchData();
+              $isNewData = $plugin->isNewData($data);
+              $isRelevantData = $plugin->isRelevantData($data);
+              if ($isRelevantData && $isNewData)
+                $plugin->displayData($data);
+              if (State::get()->isPlugin($plugin) && !$isRelevantData)
+                $this->idlePlugin->displayData();
+              $label = $isNewData ? " !" : "=>";
+              $label = $isRelevantData ? $label : " .";
+              echo "[" . date("d.m.Y H:i:s") . "] $label $plugin->pluginName: " . $plugin->stringifyData($data) . "\n";
+              $plugin->storeData($data);
+            }
+          } catch (PluginException $e) {
+            echo "[" . date("d.m.Y H:i:s") . "]    $plugin->pluginName: " . $e->getMessage() . "\n";
+          }
         }
       }
 
@@ -68,14 +79,13 @@ class Control {
     if (!in_array($command, $commands))
       throw new InvalidArgumentException("invalid command");
     if ($command == "start")
-      // does not work, see http://stackoverflow.com/questions/566248, help appreciated
-      //return `/etc/init.d/led-matrix start`;
-      return "";
+      State::setPlugin("idle", true);
     else if ($command == "reset")
       return `reset-mcu`;
     else if ($command == "log")
       return $this->log();
     else
       return `/etc/init.d/led-matrix $command`;
+    return "";
   }
 }

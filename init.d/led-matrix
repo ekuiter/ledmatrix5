@@ -8,10 +8,12 @@ EXTRA_HELP="        status  Whether the control script is running
         reset   Reset the µC and restart the control script
         log     Show the control log"
 
+DATA_PATH=/root/led-matrix-data
 CONTROL_PATH=/www/led-matrix
 CONTROL_PASS=abcdefghijklmnopqrstuvwxyz0123456789
 
 start() {
+  rm $DATA_PATH/state.dat &2> /dev/null
   php-cgi $CONTROL_PATH/control.php controlPass=$CONTROL_PASS &
 }
 
