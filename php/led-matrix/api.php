@@ -12,6 +12,7 @@ api.php?run/effect[/color[/argument]]
 
 ALLOWED COMMANDS:
   stop
+  reset
   status
   log
 

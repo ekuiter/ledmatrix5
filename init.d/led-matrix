@@ -8,18 +8,18 @@ EXTRA_HELP="        status  Whether the control script is running
         reset   Reset the µC and restart the control script
         log     Show the control log"
 
-CONTROL_PATH=http://localhost/led-matrix
+CONTROL_PATH=/www/led-matrix
 
 start() {
-  curl $CONTROL_PATH/control.php &
+  php-cgi $CONTROL_PATH/control.php &
 }
 
 stop() {
-  kill -9 $(pgrep -f "curl $CONTROL_PATH/control.php") 2> /dev/null
+  kill -9 $(pgrep -f "php-cgi $CONTROL_PATH/control.php") 2> /dev/null
 }
 
 status() {
-  PROCESSES=$(pgrep -f "curl $CONTROL_PATH/control.php")
+  PROCESSES=$(pgrep -f "php-cgi $CONTROL_PATH/control.php")
   if [ -z "$PROCESSES" ]
     then echo "Control script is not running"
     else echo "Control script is running ($(echo $PROCESSES | wc -w) instances: $(echo $PROCESSES))"

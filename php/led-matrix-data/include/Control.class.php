@@ -64,12 +64,15 @@ class Control {
   }
 
   public function runCommand($command) {
-    $commands = array("start", "stop", "status", "log");
+    $commands = array("start", "stop", "reset", "status", "log");
     if (!in_array($command, $commands))
       throw new InvalidArgumentException("invalid command");
     if ($command == "start")
       // does not work, see http://stackoverflow.com/questions/566248, help appreciated
-      return `/etc/init.d/led-matrix start`;
+      //return `/etc/init.d/led-matrix start`;
+      return "";
+    else if ($command == "reset")
+      return `reset-mcu`;
     else if ($command == "log")
       return $this->log();
     else
