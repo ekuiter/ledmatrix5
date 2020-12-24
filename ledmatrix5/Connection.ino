@@ -1,14 +1,12 @@
 Connection::Connection(Effects& e): effects(e) { }
 
 void Connection::setup() {
-  Bridge.begin();
-  Console.begin();
-  Mailbox.begin();
+  Serial.begin(9600);
 }
 
 void Connection::receive() {
-  while (Console.available() > 0) {
-    char c = Console.read();
+  while (Serial.available() > 0) {
+    char c = Serial.read();
     if (c == '\n')
       process();
     else

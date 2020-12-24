@@ -31,7 +31,8 @@ void Effects::text(Color color, int argument) {
   char buf[TEXT_MAX_LENGTH + 1];
   buf[TEXT_MAX_LENGTH] = 0;
   if (!currentTextUpdated) {
-    Bridge.get("text", buf, TEXT_MAX_LENGTH);
+    // TODO: update text here
+    strcpy(buf, "Hallo");
     currentText = String(buf);
   } else
     currentTextUpdated = false;

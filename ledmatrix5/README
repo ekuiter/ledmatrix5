@@ -1,0 +1,12 @@
+Instructions:
+- compile wiringPi (cd wiringPi; ./build)
+- compile ledmatrix5 (make)
+- edit /etc/rc.local and insert e.g. "(cd /home/pi/ledmatrix5; sudo ./ledmatrix5)"
+
+To dump the LED state:
+- touch dump_state.cmd
+- cat state.dat
+
+To schedule an effect:
+- echo 'light yellow' > schedule.cmd
+- echo 'text white testtext' > schedule.cmd

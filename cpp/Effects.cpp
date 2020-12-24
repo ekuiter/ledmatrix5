@@ -1,49 +1,72 @@
+#include "Effects.h"
+#include <algorithm>
+
 Effects::Effects(Leds& l): leds(l) { }
 
-void Effects::loop() {
-  run(&Effects::idle);
-}
-
-Effect Effects::find(effectFunc func) {
-  for (int i = 0; i < EFFECT_NUMBER; i++)
-    if (effects[i].func == func)
-      return effects[i];
+Effect Effects::find(const std::string& name) {
+  for (auto& effect : effects)
+    if (effect.name == name)
+      return effect;
   return effects[0];
 }
 
-void Effects::run(Effect effect, Color color, int argument) {
-  if (color == UNDEF) color = effect.color;
-  leds.reset((State) (effect.options & APPEND));
-  bool rotate = effect.options & ROTATE;
-  int count = mode == LOOP ? effect.count : 1;
-  for (int i = 0; i < count; i++) {
-    if (rotate)
-      for (int j = 0; j < 4; j++) {
-        leds.pointOfView(j % 4);
-        (this->*effect.func)(color, argument);
-      }
-    else
-      (this->*effect.func)(color, argument);
-    lastEffect = effect;
-  }
+Effect Effects::find(effectFunc func) {
+  for (auto& effect : effects)
+    if (effect.func == func)
+      return effect;
+  return effects[0];
 }
 
-void Effects::run(effectFunc func, Color color, int argument) {
+Effect Effects::find(effectFuncWithArg funcWithArg) {
+  for (auto& effect : effects)
+    if (effect.funcWithArg == funcWithArg)
+      return effect;
+  return effects[0];
+}
+
+void Effects::invoke(const EffectInvocation& effectInvocation) {
+  if (effectInvocation.effect.func)
+    (this->*effectInvocation.effect.func)(effectInvocation.color);
+  else
+    (this->*effectInvocation.effect.funcWithArg)(effectInvocation.color, effectInvocation.arg);
+}
+
+void Effects::run(EffectInvocation effectInvocation) {
+  if (effectInvocation.color == UNDEF)
+    effectInvocation.color = effectInvocation.effect.color;
+  leds.reset((State) (effectInvocation.effect.options & APPEND));
+  if (effectInvocation.effect.options & ROTATE)
+    for (int j = 0; j < 4; j++) {
+      leds.setPointOfView(j % 4);
+      invoke(effectInvocation);
+    }
+  else
+    invoke(effectInvocation);
+  lastEffect = effectInvocation.effect;
+}
+
+void Effects::run(Effect effect, Color color, const std::string& arg) {
+  run({ .effect = effect, .color = color, .arg = arg });
+}
+
+void Effects::run(effectFunc func, Color color) {
   run(find(func), color);
 }
 
-void Effects::manual() {
-  run(scheduledEffect, scheduledColor, scheduledArgument);
+void Effects::run(effectFuncWithArg funcWithArg, Color color, const std::string& arg) {
+  run(find(funcWithArg), color, arg);
 }
 
-void Effects::schedule(Effect effect, Color color, int argument) {
-  scheduledEffect = effect;
-  scheduledColor = color;
-  scheduledArgument = argument;
+void Effects::run() {
+  run(scheduledEffectInvocation);
 }
 
-void Effects::followPath(byte* path, size_t pathSize, Color color, int duration) {
-  byte ledArray[LEDNUM], ledNumber = pathSize * COLNUM;
+void Effects::schedule(const EffectInvocation& effectInvocation) {
+  scheduledEffectInvocation = effectInvocation;
+}
+
+void Effects::followPath(const std::vector<uint8_t>& path, Color color, int duration) {
+  uint8_t ledArray[LEDNUM], ledNumber = path.size() * COLNUM;
   for (int i = 0; i < ledNumber; i++)
     ledArray[i] = path[i / COLNUM] * COLNUM + i % COLNUM;
   for (int i = 0; i < ledNumber; i++) {
@@ -53,11 +76,11 @@ void Effects::followPath(byte* path, size_t pathSize, Color color, int duration)
     leds.set(ledArray[i], ON, color, OFF);
     for (int j = 0; j < CYCLE_SPLIT; j++)
       leds.set(ledArray[HI_BOUND(i + j, ledNumber)], ON, color, OFF);
-    DISPLAY(duration);
+    leds.display(duration);
   }
 }
 
-void Effects::copyImageParts(Image& dst, Image& src, byte* from, byte* to, int partsSize) {
+void Effects::copyImageParts(Image& dst, Image& src, uint8_t* from, uint8_t* to, int partsSize) {
   for (int i = 0; i < partsSize; i++) {
     int fromBit = RGB_LED_NUMBER - 1 - from[i];
     int toBit   = RGB_LED_NUMBER - 1 - to[i];
@@ -66,7 +89,7 @@ void Effects::copyImageParts(Image& dst, Image& src, byte* from, byte* to, int p
 }
 
 void Effects::slideToImage(Image image, Color color, Direction direction, int duration, bool spacing, int omittedRows) {
-  byte to[][ROWS] = {
+  uint8_t to[][ROWS] = {
     { 20, 21, 22, 23, 24 }, // UP    (move up and append image's row to the bottom)
     { 0, 1, 2, 3, 4 },      // DOWN  (move down and append image's row to the top)
     { 4, 9, 14, 19, 24 },   // LEFT  (move left and append image's column to the right)
@@ -74,10 +97,10 @@ void Effects::slideToImage(Image image, Color color, Direction direction, int du
   };
   if (spacing) {
     leds.move(direction);
-    DISPLAY(duration);
+    leds.display(duration);
   }
   for (int i = 0; i < ROWS - omittedRows; i++) {
-    byte from[ROWS];
+    uint8_t from[ROWS];
     if (direction == UP)
       for (int j = 0; j < ROWS; j++)
         from[j] = j + i * ROWS;
@@ -94,7 +117,7 @@ void Effects::slideToImage(Image image, Color color, Direction direction, int du
     Image slideImage = leds.getImage(color);
     copyImageParts(slideImage, image, from, to[direction], ROWS);
     leds.setImage(slideImage, color);
-    DISPLAY(duration);
+    leds.display(duration);
   }
 }
 
@@ -152,38 +175,38 @@ Image Effects::letterImage(char c) {
   return letters[idx];
 }
 
-void Effects::slideText(String text, Color color, Direction direction, int duration) {
+void Effects::slideText(std::string text, Color color, Direction direction, int duration) {
   int length = text.length();
   if (length == 0) return;
-  text.toUpperCase();
-  leds.setImage(letterImage(text.charAt(0)), color);
-  DISPLAY(duration * 2);
+  std::transform(text.begin(), text.end(), text.begin(), ::toupper);
+  leds.setImage(letterImage(text[0]), color);
+  leds.display(duration * 2);
   for (int i = 1; i < length; i++) {
-    char c = text.charAt(i);
+    char c = text[i];
     Image img = letterImage(c);
     int omittedRows = 0;
     if (img.image == 0) omittedRows = 4;
     if (c == '-') omittedRows = 2;
     slideToImage(img, color, direction, duration, true, omittedRows);
   }
-  DISPLAY(duration * 2);
+  leds.display(duration * 2);
 }
 
 Time Effects::getTime() {
-  // TODO
-  byte hours   = 12;
-  byte minutes = 15;
-  return { hours, minutes };
+  time_t rawtime;
+  time(&rawtime);
+  struct tm* timeinfo = localtime(&rawtime);
+  return { (uint8_t) timeinfo->tm_hour, (uint8_t) timeinfo->tm_min };
 }
 
 void Effects::showClock(Time time, Color color, int duration) {
-  byte hoursMap[] = { 7, 8, 8, 13, 18, 18, 17, 16, 16, 11, 6, 6 }; // LED addresses for each hour
-  byte innerMinutesMap[] = { 7, 8, 13, 18, 17, 16, 11, 6, 7 }; // and for the minutes (inner circle)
-  byte outerMinutesMap[] = { 2, 3, 4, 9, 14, 19, 24, 23, 22, 21, 20, 15, 10, 5, 0, 1, 2 };
+  uint8_t hoursMap[] = { 7, 8, 8, 13, 18, 18, 17, 16, 16, 11, 6, 6 }; // LED addresses for each hour
+  uint8_t innerMinutesMap[] = { 7, 8, 13, 18, 17, 16, 11, 6, 7 }; // and for the minutes (inner circle)
+  uint8_t outerMinutesMap[] = { 2, 3, 4, 9, 14, 19, 24, 23, 22, 21, 20, 15, 10, 5, 0, 1, 2 };
   leds.setAll(OFF);
   leds.set(12, ON, color); // always enable the central LED
   leds.set(innerMinutesMap[(int) ((time.minutes + 3.75) / 7.5)], ON, color); // use rule of three to
   leds.set(outerMinutesMap[(int) ((time.minutes + 1.875) / 3.75)], ON, color); // draw a minute hand
   leds.set(hoursMap[time.hours % 12], ON, color);
-  DISPLAY(duration);
+  leds.display(duration);
 }

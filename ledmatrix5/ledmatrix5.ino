@@ -33,8 +33,6 @@ byte dataPin = 11;
 #define RGB_LED_NUMBER    25 // number of RGB LEDs    (COLOR addressing)
 #define ROWS               5 // number of rows in the matrix
 
-#include <Console.h>
-#include <Mailbox.h>
 #include "Bitmap.h"
 #include "Registers.h"
 #include "Leds.h"
@@ -53,7 +51,7 @@ Connection connection(effects);
 // are cancelled so that the switch can happen ASAP
 enum mode {
   LOOP, MANUAL, SWITCHING_LOOP, SWITCHING_MANUAL
-} mode = MANUAL;
+} mode = LOOP;
 
 void setup() {
   connection.setup();
@@ -81,7 +79,8 @@ void receiveHook() {
       // duration (~120ms per slide frame), we can afford to query the Bridge.
       char buf[TEXT_MAX_LENGTH + 1];
       buf[TEXT_MAX_LENGTH] = 0;
-      Bridge.get("text", buf, TEXT_MAX_LENGTH);
+      // TODO: update text here
+      strcpy(buf, "Hallo Welt");
       String str = String(buf);
       if (effects.currentText != str) {
         effects.currentText = str;
@@ -102,5 +101,5 @@ void dumpHook() {
     else
       str += hex;
   }
-  Mailbox.writeMessage(str);
+  Serial.println(str);
 }

@@ -1,3 +1,4 @@
 .idea/*
 php/led-matrix/config.inc.php
 php/led-matrix-data/mail_config.lua
+*.o
